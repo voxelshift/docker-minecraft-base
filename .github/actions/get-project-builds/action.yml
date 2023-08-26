@@ -1,0 +1,6 @@
+name: Get Project Builds
+description: Get the latest builds for the configured projects and versions.
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
