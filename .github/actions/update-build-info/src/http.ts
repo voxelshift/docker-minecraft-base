@@ -10,7 +10,7 @@ async function fetchTyped<T extends z.Schema>(
 ): Promise<z.infer<T>> {
   const response = await http.getJson(url, additionalHeaders);
 
-  return schema.parseAsync(response);
+  return schema.parseAsync(response.result);
 }
 
 export type PaperProject = "paper" | "velocity";

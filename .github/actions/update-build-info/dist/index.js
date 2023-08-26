@@ -5125,7 +5125,7 @@ var lib = __nccwpck_require__(255);
 const http = new lib.HttpClient("GHA/VoxelshiftUpdater");
 async function fetchTyped(url, schema, additionalHeaders) {
     const response = await http.getJson(url, additionalHeaders);
-    return schema.parseAsync(response);
+    return schema.parseAsync(response.result);
 }
 const paperVersionsResponseSchema = z.object({
     project_id: z.string(),
