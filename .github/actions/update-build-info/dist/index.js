@@ -5176,7 +5176,7 @@ const projectSchema = z.record(buildSchema);
 const buildsJsonSchema = z.record(projectSchema);
 async function run() {
     const buildsFile = await promises_namespaceObject.readFile("./builds.json", { encoding: "utf8" });
-    const builds = await buildsJsonSchema.parseAsync(buildsFile);
+    const builds = await buildsJsonSchema.parseAsync(JSON.parse(buildsFile));
     const newBuilds = await getUpdatedBuilds(builds);
     await promises_namespaceObject.writeFile("./builds.json", JSON.stringify(newBuilds, null, 2));
 }

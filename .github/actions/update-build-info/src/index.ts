@@ -19,7 +19,7 @@ type BuildsJson = z.infer<typeof buildsJsonSchema>;
 
 async function run() {
   const buildsFile = await fs.readFile("./builds.json", { encoding: "utf8" });
-  const builds = await buildsJsonSchema.parseAsync(buildsFile);
+  const builds = await buildsJsonSchema.parseAsync(JSON.parse(buildsFile));
 
   const newBuilds = await getUpdatedBuilds(builds);
 
