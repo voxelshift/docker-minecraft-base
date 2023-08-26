@@ -15,7 +15,7 @@ jobs:
         run: |
           echo "{date}={$(date +'%Y-%m-%d %H:%M')}" >> $GITHUB_STATE
 
-      - uses: ./.github/actions/update-version-info
+      - uses: ./.github/actions/update-build-info
 
       - uses: EndBug/add-and-commit@v9
         with:
