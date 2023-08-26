@@ -1,0 +1,6 @@
+name: Update Build Info
+description: Update the builds.json file in this repository.
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

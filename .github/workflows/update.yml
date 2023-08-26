@@ -1,0 +1,24 @@
+name: Update Build Information
+on:
+  schedule:
+    - cron: "0,30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get current date
+        id: date
+        run: |
+          echo "{date}={$(date +'%Y-%m-%d %H:%M')}" >> $GITHUB_STATE
+
+      - uses: ./.github/actions/update-version-info
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: Update build information on ${{ env.date }}
+          committer_name: GitHub Actions
+          committer_email: 41898282+github-actions[bot]@users.noreply.github.com
