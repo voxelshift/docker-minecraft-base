@@ -6935,10 +6935,12 @@ const projectsJsonSchema = z.object({
     velocity: z.array(z.string()),
 });
 async function run() {
-    const projectsFile = await promises_namespaceObject.readFile("./versions.json", {
+    const projectsFile = await promises_namespaceObject.readFile("./projects.json", {
         encoding: "utf8",
     });
     const projects = await projectsJsonSchema.parseAsync(JSON.parse(projectsFile));
+    core.info("Searching for latest builds of projects:");
+    core.info(JSON.stringify(projects, null, 2));
     const projectBuilds = await getLatestBuilds(projects);
     core.info("Obtained project builds:");
     core.info(JSON.stringify(projectBuilds, null, 2));

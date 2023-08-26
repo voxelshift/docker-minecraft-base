@@ -11,12 +11,15 @@ const projectsJsonSchema = z.object({
 type ProjectsJson = z.infer<typeof projectsJsonSchema>;
 
 async function run() {
-  const projectsFile = await fs.readFile("./versions.json", {
+  const projectsFile = await fs.readFile("./projects.json", {
     encoding: "utf8",
   });
   const projects = await projectsJsonSchema.parseAsync(
     JSON.parse(projectsFile)
   );
+
+  core.info("Searching for latest builds of projects:");
+  core.info(JSON.stringify(projects, null, 2));
 
   const projectBuilds = await getLatestBuilds(projects);
 
