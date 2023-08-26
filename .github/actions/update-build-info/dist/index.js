@@ -5204,7 +5204,7 @@ async function getPaperBuilds(project, builds) {
             version,
             {
                 build: buildNumber,
-                downloadUrl: `https://api.papermc.io/projects/${project}/versions/${version}/builds/${buildNumber}/downloads/${download.name}`,
+                downloadUrl: `https://api.papermc.io/v2/projects/${project}/versions/${version}/builds/${buildNumber}/downloads/${download.name}`,
                 sha256: download.sha256,
             },
         ];

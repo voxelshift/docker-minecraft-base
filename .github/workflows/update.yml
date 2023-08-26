@@ -19,6 +19,6 @@ jobs:
 
       - uses: EndBug/add-and-commit@v9
         with:
-          message: Update build information on ${{ env.date }}
+          message: Update build information
           committer_name: GitHub Actions
           committer_email: 41898282+github-actions[bot]@users.noreply.github.com
