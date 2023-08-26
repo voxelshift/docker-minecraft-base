@@ -66,5 +66,5 @@ async function fetchPaperBuilds(project: PaperProject, version: string) {
 export async function getPaperBuild(project: PaperProject, version: string) {
   const response = await fetchPaperBuilds(project, version);
 
-  return response.builds[0];
+  return response.builds[response.builds.length - 1];
 }

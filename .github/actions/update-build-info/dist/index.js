@@ -5161,7 +5161,7 @@ async function fetchPaperBuilds(project, version) {
 }
 async function getPaperBuild(project, version) {
     const response = await fetchPaperBuilds(project, version);
-    return response.builds[0];
+    return response.builds[response.builds.length - 1];
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts
