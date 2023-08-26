@@ -1,16 +1,16 @@
 {
   "paper": {
     "1.20.1": {
-      "build": 18,
-      "downloadUrl": "https://api.papermc.io/v2/projects/paper/versions/1.20.1/builds/18/downloads/paper-1.20.1-18.jar",
-      "sha256": "abbf1a52cb477619d347e06e17cd2cfa778b200d0f42164477a42e9fd13b8e0a"
+      "build": 164,
+      "downloadUrl": "https://api.papermc.io/v2/projects/paper/versions/1.20.1/builds/164/downloads/paper-1.20.1-164.jar",
+      "sha256": "a5f8f68ccffe73278c3456506f3ec3ef7a6013cc81dea42ed61adc594facb5e5"
     }
   },
   "velocity": {
     "3.2.0-SNAPSHOT": {
-      "build": 214,
-      "downloadUrl": "https://api.papermc.io/v2/projects/velocity/versions/3.2.0-SNAPSHOT/builds/214/downloads/velocity-3.2.0-SNAPSHOT-214.jar",
-      "sha256": "1bf681f954bc4d68a3b395c1eb360a933500f8fd960679bf40e8d05af16e8483"
+      "build": 265,
+      "downloadUrl": "https://api.papermc.io/v2/projects/velocity/versions/3.2.0-SNAPSHOT/builds/265/downloads/velocity-3.2.0-SNAPSHOT-265.jar",
+      "sha256": "678f61038c1ce4e370a13b05a8dbc4a20a0ed19a08e4a1173bf2d500d16dd2d2"
     }
   }
 }
