@@ -5169,8 +5169,9 @@ async function getPaperBuild(project, version) {
 
 
 const buildSchema = z.object({
-    downloadUrl: z.string(),
     build: z.number(),
+    downloadUrl: z.string(),
+    sha256: z.string(),
 });
 const projectSchema = z.record(buildSchema);
 const buildsJsonSchema = z.record(projectSchema);
@@ -5197,11 +5198,14 @@ async function getPaperBuilds(project, builds) {
     const versions = getVersions(project, builds);
     const entries = await Promise.all(versions.map(async (version) => {
         const build = await getPaperBuild(project, version);
+        const buildNumber = build.build;
+        const download = build.downloads["application"];
         return [
             version,
             {
-                build: build.build,
-                downloadUrl: "",
+                build: buildNumber,
+                downloadUrl: `https://api.papermc.io/projects/${project}/versions/${version}/builds/${buildNumber}/downloads/${download.name}`,
+                sha256: download.sha256,
             },
         ];
     }));
