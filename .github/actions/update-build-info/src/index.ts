@@ -27,6 +27,8 @@ async function run() {
 }
 
 function getVersions(project: string, builds: BuildsJson) {
+  if (!builds[project]) return [];
+
   return Object.keys(builds[project]);
 }
 

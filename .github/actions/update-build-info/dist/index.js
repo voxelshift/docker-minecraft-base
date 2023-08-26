@@ -5181,6 +5181,8 @@ async function run() {
     await promises_namespaceObject.writeFile("./builds.json", JSON.stringify(newBuilds, null, 2));
 }
 function getVersions(project, builds) {
+    if (!builds[project])
+        return [];
     return Object.keys(builds[project]);
 }
 async function getUpdatedBuilds(builds) {
