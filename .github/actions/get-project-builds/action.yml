@@ -1,15 +1,16 @@
-name: Fetch Paper Builds
-description: Fetch the latest builds of PaperMC projects.
+name: Fetch Project Builds
+description: Fetch the latest builds of Minecraft projects.
 
 inputs:
   project:
-    description: The PaperMC project to fetch.
-  versions:
-    description: A JSON array of strings of versions to fetch.
-
+    description: "The project to fetch. One of: paper, velocity, fabric."
+  version:
+    description: The version to fetch.
 outputs:
   build:
-    description: A JSON object containing build information.
+    description: The latest build id.
+  download-url:
+    description: The download url of the latest build.
 
 runs:
   using: 'node16'

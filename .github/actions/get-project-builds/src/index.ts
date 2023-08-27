@@ -28,11 +28,12 @@ async function run() {
   core.info(`Obtained latest ${project} build:`);
   core.info(JSON.stringify(build, null, 2));
 
-  core.setOutput("build", build);
+  core.setOutput("build", build.id);
+  core.setOutput("download-url", build.downloadUrl);
 }
 
 interface Build {
-  build: string;
+  id: string;
   downloadUrl: string;
   sha256: string;
 }
@@ -57,7 +58,7 @@ async function getLatestBuild(
   const fileName = download.name;
 
   return {
-    build: build.build.toString(),
+    id: build.build.toString(),
     downloadUrl: `https://api.papermc.io/projects/${project}/versions/${version}/builds/${build}/downloads/${fileName}`,
     sha256: download.sha256,
   };

@@ -1815,7 +1815,7 @@ var tls = __nccwpck_require__(404);
 var http = __nccwpck_require__(685);
 var https = __nccwpck_require__(687);
 var events = __nccwpck_require__(361);
-var assert = __nccwpck_require__(728);
+var assert = __nccwpck_require__(491);
 var util = __nccwpck_require__(837);
 
 
@@ -2722,7 +2722,7 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 728:
+/***/ 491:
 /***/ ((module) => {
 
 "use strict";
@@ -2866,6 +2866,10 @@ var __webpack_exports__ = {};
 // ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
 
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(186);
+// EXTERNAL MODULE: ./node_modules/@actions/http-client/lib/index.js
+var lib = __nccwpck_require__(255);
 ;// CONCATENATED MODULE: ./node_modules/zod/lib/index.mjs
 var util;
 (function (util) {
@@ -6874,12 +6878,6 @@ var z = /*#__PURE__*/Object.freeze({
 
 
 
-;// CONCATENATED MODULE: external "fs/promises"
-const promises_namespaceObject = require("fs/promises");
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(186);
-// EXTERNAL MODULE: ./node_modules/@actions/http-client/lib/index.js
-var lib = __nccwpck_require__(255);
 ;// CONCATENATED MODULE: ./src/http.ts
 
 
@@ -6925,50 +6923,45 @@ async function getLatestPaperBuild(project, version) {
     return response.builds[response.builds.length - 1];
 }
 
+;// CONCATENATED MODULE: ./src/zod.ts
+
+const projectTypeSchema = z["enum"](["paper", "velocity"]);
+const projectVersionSchema = z.string();
+
 ;// CONCATENATED MODULE: ./src/index.ts
 
 
 
-
-const projectsJsonSchema = z.object({
-    paper: z.array(z.string()),
-    velocity: z.array(z.string()),
-});
+async function getInputTyped(name, schema, options) {
+    const input = core.getInput(name, options);
+    return schema.parseAsync(JSON.parse(input));
+}
 async function run() {
-    const projectsFile = await promises_namespaceObject.readFile("./projects.json", {
-        encoding: "utf8",
+    const project = await getInputTyped("project", projectTypeSchema, {
+        required: true,
     });
-    const projects = await projectsJsonSchema.parseAsync(JSON.parse(projectsFile));
-    core.info("Searching for latest builds of projects:");
-    core.info(JSON.stringify(projects, null, 2));
-    const projectBuilds = await getLatestBuilds(projects);
-    core.info("Obtained project builds:");
-    core.info(JSON.stringify(projectBuilds, null, 2));
-    core.setOutput("projects", projectBuilds);
+    const version = await getInputTyped("versions", projectVersionSchema, {
+        required: true,
+    });
+    core.info(`Searching for latest build of ${project} ${version}`);
+    const build = await getLatestBuild(project, version);
+    core.info(`Obtained latest ${project} build:`);
+    core.info(JSON.stringify(build, null, 2));
+    core.setOutput("build", build.id);
+    core.setOutput("download-url", build.downloadUrl);
 }
-async function getLatestBuilds(projects) {
-    const paper = await getPaperBuilds("paper", projects.paper);
-    const velocity = await getPaperBuilds("velocity", projects.velocity);
+async function getLatestBuild(project, version) {
+    const build = await getLatestPaperBuild(project, version);
+    const download = build.downloads["application"];
+    if (!download) {
+        throw new Error(`Unable to find application download in: ${JSON.stringify(build.downloads, null, 2)}`);
+    }
+    const fileName = download.name;
     return {
-        paper,
-        velocity,
+        id: build.build.toString(),
+        downloadUrl: `https://api.papermc.io/projects/${project}/versions/${version}/builds/${build}/downloads/${fileName}`,
+        sha256: download.sha256,
     };
-}
-async function getPaperBuilds(project, versions) {
-    const entries = await Promise.all(versions.map(async (version) => {
-        const build = await getLatestPaperBuild(project, version);
-        const buildNumber = build.build;
-        const download = build.downloads["application"];
-        return [
-            version,
-            {
-                build: buildNumber,
-                downloadUrl: `https://api.papermc.io/v2/projects/${project}/versions/${version}/builds/${buildNumber}/downloads/${download.name}`,
-                sha256: download.sha256,
-            },
-        ];
-    }));
-    return Object.fromEntries(entries);
 }
 run();
 

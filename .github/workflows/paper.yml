@@ -37,7 +37,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           platforms: linux/amd64,linux/arm64
           build-args: |
-            PAPER_DOWNLOAD_URL=${{ fromJson(steps.fetch-builds.outputs.build).downloadUrl }}
+            PAPER_DOWNLOAD_URL=${{ steps.fetch-builds.outputs.downloadUrl }}
           tags: |
             ghcr.io/voxelshift/paper:${{ matrix.version }}
-            ghcr.io/voxelshift/paper:${{ matrix.version }}-${{ fromJson(steps.fetch-builds.outputs.build).build }}
+            ghcr.io/voxelshift/paper:${{ matrix.version }}-${{ steps.fetch-builds.outputs.build }}
