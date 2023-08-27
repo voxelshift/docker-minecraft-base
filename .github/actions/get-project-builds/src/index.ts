@@ -51,11 +51,11 @@ async function getLatestPaperBuild(project: PaperProject, version: string) {
     );
   }
 
-  const fileName = download.name;
+  const buildId = build.build.toString();
 
   return {
-    id: build.build.toString(),
-    downloadUrl: `https://api.papermc.io/projects/${project}/versions/${version}/builds/${build}/downloads/${fileName}`,
+    id: buildId,
+    downloadUrl: `https://api.papermc.io/projects/${project}/versions/${version}/builds/${buildId}/downloads/${download.name}`,
     sha256: download.sha256,
   };
 }
