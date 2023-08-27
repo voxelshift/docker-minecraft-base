@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dockerfile: [Dockerfile]
+        alpine: [true, false]
         version: ["1.20.1"]
     steps:
       - uses: actions/checkout@v3
@@ -41,11 +41,11 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./paper/
-          file: ./paper/${{ matrix.dockerfile }}
+          file: ./paper/Dockerfile${{ matrix.alpine && '.alpine' || '' }}
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
             PAPER_DOWNLOAD_URL=${{ steps.fetch-builds.outputs.download-url }}
           tags: |
-            ghcr.io/voxelshift/paper:${{ matrix.version }}
-            ghcr.io/voxelshift/paper:${{ matrix.version }}-${{ steps.fetch-builds.outputs.build }}
+            ghcr.io/voxelshift/paper:${{ matrix.version }}${{ matrix.alpine && '-alpine' || '' }}
+            ghcr.io/voxelshift/paper:${{ matrix.version }}-${{ steps.fetch-builds.outputs.build }}${{ matrix.alpine && '-alpine' || '' }}
