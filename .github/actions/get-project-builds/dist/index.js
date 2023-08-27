@@ -6955,7 +6955,7 @@ async function getLatestPaperBuild(project, version) {
     const buildId = build.build.toString();
     return {
         id: buildId,
-        downloadUrl: `https://api.papermc.io/projects/${project}/versions/${version}/builds/${buildId}/downloads/${download.name}`,
+        downloadUrl: `https://api.papermc.io/v2/projects/${project}/versions/${version}/builds/${buildId}/downloads/${download.name}`,
         sha256: download.sha256,
     };
 }
