@@ -43,7 +43,7 @@ jobs:
           dockerfile: ./paper/Dockerfile${{ matrix.distribution != 'debian' && format('.{0}', matrix.distribution) || '' }}
           tag-suffix: ${{ matrix.distribution != 'debian' && format('-{0}', matrix.distribution) || '' }}
           # Eclipse Termurin doesn't provide images for arm64 alpine: https://github.com/adoptium/containers/issues/158
-          platforms: linux/amd64,${{ matrix.distribution == 'debian' && 'linux/arm64' || '' }}
+          platforms: linux/amd64${{ matrix.distribution == 'debian' && ',linux/arm64' || '' }}
         with:
           context: ./paper/
           file: ${{ env.dockerfile }}
