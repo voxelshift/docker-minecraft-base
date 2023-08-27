@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./paper/
-          file: ${{ matrix.dockerfile }}
+          file: ./paper/${{ matrix.dockerfile }}
           platforms: linux/amd64,linux/arm64
           build-args: |
             PAPER_DOWNLOAD_URL=${{ steps.fetch-builds.outputs.downloadUrl }}
