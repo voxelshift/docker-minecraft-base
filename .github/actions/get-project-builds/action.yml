@@ -1,5 +1,15 @@
-name: Get Project Builds
-description: Get the latest builds for the configured projects and versions.
+name: Fetch Paper Builds
+description: Fetch the latest builds of PaperMC projects.
+
+inputs:
+  project:
+    description: The PaperMC project to fetch.
+  versions:
+    description: A JSON array of strings of versions to fetch.
+
+outputs:
+  build:
+    description: A JSON object containing build information.
 
 runs:
   using: 'node16'

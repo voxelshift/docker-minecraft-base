@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
-    "moduleResolution": "Node"
-  }
+    "strict": true,
+    "moduleResolution": "Node",
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
 }

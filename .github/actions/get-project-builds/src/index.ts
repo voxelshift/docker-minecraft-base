@@ -1,32 +1,34 @@
 import { z } from "zod";
-import * as fs from "fs/promises";
 import * as core from "@actions/core";
-import { PaperProject, getLatestPaperBuild } from "./http";
+import { getLatestPaperBuild } from "./http";
+import { projectTypeSchema, projectVersionSchema, ProjectType } from "./zod";
 
-const projectsJsonSchema = z.object({
-  paper: z.array(z.string()),
-  velocity: z.array(z.string()),
-});
+async function getInputTyped<T extends z.Schema>(
+  name: string,
+  schema: T,
+  options?: core.InputOptions
+): Promise<z.infer<T>> {
+  const input = core.getInput(name, options);
 
-type ProjectsJson = z.infer<typeof projectsJsonSchema>;
+  return schema.parseAsync(JSON.parse(input));
+}
 
 async function run() {
-  const projectsFile = await fs.readFile("./projects.json", {
-    encoding: "utf8",
+  const project = await getInputTyped("project", projectTypeSchema, {
+    required: true,
   });
-  const projects = await projectsJsonSchema.parseAsync(
-    JSON.parse(projectsFile)
-  );
+  const version = await getInputTyped("versions", projectVersionSchema, {
+    required: true,
+  });
 
-  core.info("Searching for latest builds of projects:");
-  core.info(JSON.stringify(projects, null, 2));
+  core.info(`Searching for latest build of ${project} ${version}`);
 
-  const projectBuilds = await getLatestBuilds(projects);
+  const build = await getLatestBuild(project, version);
 
-  core.info("Obtained project builds:");
-  core.info(JSON.stringify(projectBuilds, null, 2));
+  core.info(`Obtained latest ${project} build:`);
+  core.info(JSON.stringify(build, null, 2));
 
-  core.setOutput("projects", projectBuilds);
+  core.setOutput("build", build);
 }
 
 interface Build {
@@ -35,46 +37,30 @@ interface Build {
   sha256: string;
 }
 
-type Versions = Record<string, Build>;
+async function getLatestBuild(
+  project: ProjectType,
+  version: string
+): Promise<Build> {
+  const build = await getLatestPaperBuild(project, version);
+  const download = build.downloads["application"];
 
-interface Projects {
-  paper: Versions;
-  velocity: Versions;
-}
+  if (!download) {
+    throw new Error(
+      `Unable to find application download in: ${JSON.stringify(
+        build.downloads,
+        null,
+        2
+      )}`
+    );
+  }
 
-async function getLatestBuilds(projects: ProjectsJson): Promise<Projects> {
-  const paper = await getPaperBuilds("paper", projects.paper);
-  const velocity = await getPaperBuilds("velocity", projects.velocity);
+  const fileName = download.name;
 
   return {
-    paper,
-    velocity,
+    build: build.build.toString(),
+    downloadUrl: `https://api.papermc.io/projects/${project}/versions/${version}/builds/${build}/downloads/${fileName}`,
+    sha256: download.sha256,
   };
-}
-
-async function getPaperBuilds(
-  project: PaperProject,
-  versions: string[]
-): Promise<Versions> {
-  const entries = await Promise.all(
-    versions.map(async (version) => {
-      const build = await getLatestPaperBuild(project, version);
-
-      const buildNumber = build.build;
-      const download = build.downloads["application"];
-
-      return [
-        version,
-        {
-          build: buildNumber,
-          downloadUrl: `https://api.papermc.io/v2/projects/${project}/versions/${version}/builds/${buildNumber}/downloads/${download.name}`,
-          sha256: download.sha256,
-        },
-      ];
-    })
-  );
-
-  return Object.fromEntries(entries);
 }
 
 run();
