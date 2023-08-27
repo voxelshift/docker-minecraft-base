@@ -5,7 +5,7 @@ async function run() {
   const project = core.getInput("project", {
     required: true,
   });
-  const version = core.getInput("versions", {
+  const version = core.getInput("version", {
     required: true,
   });
 
