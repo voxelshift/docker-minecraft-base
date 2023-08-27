@@ -1,23 +1,11 @@
-import { z } from "zod";
 import * as core from "@actions/core";
-import { getLatestPaperBuild } from "./http";
-import { projectTypeSchema, projectVersionSchema, ProjectType } from "./zod";
-
-async function getInputTyped<T extends z.Schema>(
-  name: string,
-  schema: T,
-  options?: core.InputOptions
-): Promise<z.infer<T>> {
-  const input = core.getInput(name, options);
-
-  return schema.parseAsync(JSON.parse(input));
-}
+import { PaperProject, fetchLatestPaperBuild } from "./http";
 
 async function run() {
-  const project = await getInputTyped("project", projectTypeSchema, {
+  const project = core.getInput("project", {
     required: true,
   });
-  const version = await getInputTyped("versions", projectVersionSchema, {
+  const version = core.getInput("versions", {
     required: true,
   });
 
@@ -39,10 +27,18 @@ interface Build {
 }
 
 async function getLatestBuild(
-  project: ProjectType,
+  project: string,
   version: string
 ): Promise<Build> {
-  const build = await getLatestPaperBuild(project, version);
+  if (["paper", "velocity"].includes(project)) {
+    return getLatestPaperBuild(project as PaperProject, version);
+  }
+
+  throw new Error(`Unknown project type: ${project}`);
+}
+
+async function getLatestPaperBuild(project: PaperProject, version: string) {
+  const build = await fetchLatestPaperBuild(project, version);
   const download = build.downloads["application"];
 
   if (!download) {

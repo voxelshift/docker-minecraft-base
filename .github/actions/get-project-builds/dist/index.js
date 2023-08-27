@@ -6918,29 +6918,19 @@ const paperBuildsResponseSchema = z.object({
 async function fetchPaperBuilds(project, version) {
     return fetchTyped(`https://api.papermc.io/v2/projects/${project}/versions/${version}/builds`, paperBuildsResponseSchema);
 }
-async function getLatestPaperBuild(project, version) {
+async function fetchLatestPaperBuild(project, version) {
     const response = await fetchPaperBuilds(project, version);
     return response.builds[response.builds.length - 1];
 }
 
-;// CONCATENATED MODULE: ./src/zod.ts
-
-const projectTypeSchema = z["enum"](["paper", "velocity"]);
-const projectVersionSchema = z.string();
-
 ;// CONCATENATED MODULE: ./src/index.ts
 
 
-
-async function getInputTyped(name, schema, options) {
-    const input = core.getInput(name, options);
-    return schema.parseAsync(JSON.parse(input));
-}
 async function run() {
-    const project = await getInputTyped("project", projectTypeSchema, {
+    const project = core.getInput("project", {
         required: true,
     });
-    const version = await getInputTyped("versions", projectVersionSchema, {
+    const version = core.getInput("versions", {
         required: true,
     });
     core.info(`Searching for latest build of ${project} ${version}`);
@@ -6951,7 +6941,13 @@ async function run() {
     core.setOutput("download-url", build.downloadUrl);
 }
 async function getLatestBuild(project, version) {
-    const build = await getLatestPaperBuild(project, version);
+    if (["paper", "velocity"].includes(project)) {
+        return getLatestPaperBuild(project, version);
+    }
+    throw new Error(`Unknown project type: ${project}`);
+}
+async function getLatestPaperBuild(project, version) {
+    const build = await fetchLatestPaperBuild(project, version);
     const download = build.downloads["application"];
     if (!download) {
         throw new Error(`Unable to find application download in: ${JSON.stringify(build.downloads, null, 2)}`);

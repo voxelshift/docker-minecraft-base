@@ -63,7 +63,7 @@ async function fetchPaperBuilds(project: PaperProject, version: string) {
   );
 }
 
-export async function getLatestPaperBuild(
+export async function fetchLatestPaperBuild(
   project: PaperProject,
   version: string
 ) {
