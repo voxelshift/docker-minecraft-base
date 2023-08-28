@@ -1,0 +1,23 @@
+name: Cache Key
+description: Checks if a given key has been "cached".
+inputs:
+  key:
+    description: The cache key.
+    required: true
+outputs:
+  cache-hit:
+    description: If the cache key exists or not.
+    value: ${{ steps.cache.outputs.cache-hit }}
+runs:
+  using: composite
+  steps:
+    # Create an empty file because we need at least one file in order to create the cache.
+    - run: touch empty-file
+      shell: bash
+    - name: Check Cache for Key
+      id: cache
+      uses: actions/cache@v3
+      with:
+        # Path is an empty file because the only thing of significance here is the key.
+        path: "empty-file"
+        key: ${{ inputs.key }}
