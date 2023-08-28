@@ -30,8 +30,8 @@ jobs:
         id: cache-build-id
         uses: actions/cache@v3
         with:
-          # Path is empty because the only thing of significance here is the key.
-          path: ""
+          # Path is nonexistent because the only thing of significance here is the key.
+          path: "empty-file"
           key: paper-${{matrix.version}}-${{ steps.fetch-builds.outputs.build }}
 
       - name: Set up QEMU
