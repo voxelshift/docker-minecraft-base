@@ -2,21 +2,16 @@
 Docker images for various Minecraft server and proxy implementations.
 
 ## about
-These Docker images are designed for building production-ready Minecraft servers and networks. They are very lightweight
-and intentionally don't include [anti-features](https://en.wiktionary.org/wiki/anti-feature) like auto updating and 
-plugin fetching.
+The goal of this project is to create a set of production-ready Docker images for Minecraft servers and networks. These
+images are intentionally very bare-bones and unopinionated, aiming to change as little from the base server 
+configuration as possible. Anti-features like auto-updating and plugin downloading are also not included, as this 
+violates the Docker best practice of providing a reproducible environment.
 
-While these features may be convenient they completely defeat the point of Dockerizing an application in the first place
-(reproducible builds). Instead, the correct way to use these images is to extend them to create _your own_ Docker 
-images that contain the necessary configuration for your server. This way your server's configuration is properly
-versioned and reproducible.
 
-### supported software
-Currently there are Docker images for [Paper](https://papermc.io/software/paper) and 
-[Velocity](https://papermc.io/software/velocity). There's plans to add support for Fabric servers in the near future.
 
-Currently there are no plans to add support for Bukkit or Spigot since Paper is almost always the better option and
-it's hard to justify the extra maintenance and development burden required to support them.
+## images
+### paper
+
 
 ## data persistence
 Minecraft servers often have a blurry line between what is configuration data and what is runtime storage data. For 
@@ -25,11 +20,16 @@ Others would consider this to be runtime data storage since it can be modified b
 don't take any stance on the persistence of runtime data - it is left up to the consumer of these images to decide
 if these files should be persisted by creating a volume for them.
 
+Note that this means that **no data is persisted by default**. When the container stops, you will lose your worlds,
+plugin data, basically anything that the server writes in runtime. You **must** set up volumes if you need data 
+persistence.
+
 ### recommendations
 - Avoid using volumes unless absolutely necessary
     - You can always manage permissions and bans with a database-backed plugin instead
     - It may make sense to treat `ops.json` and `whitelist.json` as configuration files, but this can also be annoying
       if you plan on modifying these often
+    - In most cases, you should be baking plugins and mods into your images
     - If you don't need world persistence, you can always keep the world files themselves as configuration data
 - If you do need to use volumes, avoid using them to store strictly configuration files
     - Configuration-only files should be baked into the Docker image itself

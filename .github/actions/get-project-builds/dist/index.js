@@ -6886,15 +6886,6 @@ async function fetchTyped(url, schema, additionalHeaders) {
     const response = await http.getJson(url, additionalHeaders);
     return schema.parseAsync(response.result);
 }
-const paperVersionsResponseSchema = z.object({
-    project_id: z.string(),
-    project_name: z.string(),
-    version_groups: z.array(z.string()),
-    versions: z.array(z.string()),
-});
-async function fetchPaperVersions(project) {
-    return fetchTyped(`https://api.papermc.io/v2/projects/${project}`, paperVersionsResponseSchema);
-}
 const paperBuildsResponseSchema = z.object({
     project_id: z.string(),
     project_name: z.string(),
