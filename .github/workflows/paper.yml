@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v3
         with:
           # Path is empty because the only thing of significance here is the key.
-          path:
+          path: ""
           key: paper-${{matrix.version}}-${{ steps.fetch-builds.outputs.build }}
 
       - name: Set up QEMU
