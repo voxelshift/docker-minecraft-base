@@ -56,6 +56,9 @@ export async function fetchLatestPaperBuild(
   const response = await fetchPaperBuilds(project, version);
 
   const build = response.builds[(response.builds.length = 1)];
+
+  console.log(response, build);
+
   const download = build.downloads["application"];
 
   if (!download) {

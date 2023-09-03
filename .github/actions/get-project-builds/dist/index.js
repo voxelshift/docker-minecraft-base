@@ -6912,6 +6912,7 @@ async function fetchPaperBuilds(project, version) {
 async function fetchLatestPaperBuild(project, version) {
     const response = await fetchPaperBuilds(project, version);
     const build = response.builds[(response.builds.length = 1)];
+    console.log(response, build);
     const download = build.downloads["application"];
     if (!download) {
         throw new Error(`Unable to find application download in: ${JSON.stringify(build.downloads, null, 2)}`);
