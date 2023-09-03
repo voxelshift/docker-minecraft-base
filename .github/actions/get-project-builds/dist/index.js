@@ -6954,7 +6954,7 @@ async function fetchLatestFabricBuild(version) {
     const installerVersion = installerVersions[0].version;
     const loaderVersion = loaderVersions[0].loader.version;
     return {
-        id: `${installerVersion}-${loaderVersion}`,
+        id: installerVersion,
         downloadUrl: `https://meta.fabricmc.net/v2/versions/loader/${version}/${loaderVersion}/${installerVersion}/server/jar`,
     };
 }
