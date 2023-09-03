@@ -14,6 +14,7 @@ violates the Docker best practice of providing a reproducible environment.
 
 ### [velocity](https://github.com/voxelshift/docker-minecraft/pkgs/container/velocity)
 
+### [fabric](https://github.com/voxelshift/docker-minecraft/pkgs/container/fabric)
 
 ## data persistence
 Minecraft servers often have a blurry line between what is configuration data and what is runtime storage data. For 
