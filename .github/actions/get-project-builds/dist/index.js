@@ -6934,7 +6934,7 @@ async function fetchFabricInstallerVersions() {
 const fabricLoaderVersionsResponseSchema = z.array(z.object({
     loader: z.object({
         separator: z.string(),
-        build: z.string(),
+        build: z.number(),
         maven: z.string(),
         version: z.string(),
         stable: z.boolean(),
