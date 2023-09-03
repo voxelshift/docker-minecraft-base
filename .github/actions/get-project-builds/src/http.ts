@@ -55,5 +55,76 @@ export async function fetchLatestPaperBuild(
 ) {
   const response = await fetchPaperBuilds(project, version);
 
-  return response.builds[response.builds.length - 1];
+  const build = response.builds[(response.builds.length = 1)];
+  const download = build.downloads["application"];
+
+  if (!download) {
+    throw new Error(
+      `Unable to find application download in: ${JSON.stringify(
+        build.downloads,
+        null,
+        2
+      )}`
+    );
+  }
+
+  const buildId = build.build.toString();
+
+  return {
+    id: buildId,
+    downloadUrl: `https://api.papermc.io/v2/projects/${project}/versions/${version}/builds/${buildId}/downloads/${download.name}`,
+  };
+}
+
+const fabricInstallerVersionsResponseSchema = z.array(
+  z.object({
+    url: z.string(),
+    maven: z.string(),
+    version: z.string(),
+    stable: z.boolean(),
+  })
+);
+
+async function fetchFabricInstallerVersions() {
+  return fetchTyped(
+    "https://meta.fabricmc.net/v2/versions/installer",
+    fabricInstallerVersionsResponseSchema
+  );
+}
+
+const fabricLoaderVersionsResponseSchema = z.array(
+  z.object({
+    loader: z.object({
+      separator: z.string(),
+      build: z.string(),
+      maven: z.string(),
+      version: z.string(),
+      stable: z.boolean(),
+    }),
+    intermediary: z.object({
+      maven: z.string(),
+      version: z.string(),
+      stable: z.boolean(),
+    }),
+  })
+);
+
+async function fetchFabricLoaderVersions(version: string) {
+  return fetchTyped(
+    `https://meta.fabricmc.net/v2/versions/loader/${version}`,
+    fabricLoaderVersionsResponseSchema
+  );
+}
+
+export async function fetchLatestFabricBuild(version: string) {
+  const installerVersions = await fetchFabricInstallerVersions();
+  const loaderVersions = await fetchFabricLoaderVersions(version);
+
+  const installerVersion = installerVersions[0].version;
+  const loaderVersion = loaderVersions[0].loader.version;
+
+  return {
+    id: `${installerVersion}-${loaderVersion}`,
+    downloadUrl: `https://meta.fabricmc.net/v2/versions/loader/${version}/${loaderVersion}/${installerVersion}/server/jar`,
+  };
 }

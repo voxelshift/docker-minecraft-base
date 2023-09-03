@@ -10,7 +10,9 @@ violates the Docker best practice of providing a reproducible environment.
 
 
 ## images
-### paper
+### [paper](https://github.com/voxelshift/docker-minecraft/pkgs/container/paper)
+
+### [velocity](https://github.com/voxelshift/docker-minecraft/pkgs/container/velocity)
 
 
 ## data persistence
