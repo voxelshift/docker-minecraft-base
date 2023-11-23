@@ -66,3 +66,6 @@ jobs:
           tags: |
             ghcr.io/voxelshift/paper:${{ matrix.version }}${{ env.tag-suffix }}
             ghcr.io/voxelshift/paper:${{ matrix.version }}-${{ steps.fetch-builds.outputs.build }}${{ env.tag-suffix }}
+
+      # Prevent GHA from disabling this workflow after 60 days of repo inactivity
+      - uses: gautamkrishnar/keepalive-workflow@v1
